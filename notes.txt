@@ -1,0 +1,28 @@
+NOTE: CELERY ONLY WORKS IN LINUX ENVIRONMENTS!
+
+# Celery worker command #
+# for Linux
+celery -A main:celery_app worker --log-level=debug -P gevent
+
+# for Windows WSL2
+celery -A main:celery_app worker --log-level=debug -P threads
+
+# Flower monitoring command
+celery -A main:celery_app flower --port=5555
+
+# INSTALLING REDIS IN UBUNTU
+
+sudo apt update
+sudo apt install redis-server
+
+# CHANGE THIS VALUE: supervised systemd
+sudo nano /etc/redis/redis.conf
+
+sudo systemctl restart redis
+sudo systemctl status  redis
+
+# Enable the Redis server to start automatically upon system startup or a reboot
+sudo systemctl enable --now redis-server
+
+# Checking Redis version
+redis-server -v
