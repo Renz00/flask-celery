@@ -10,6 +10,10 @@ from ..celery.tasks import get_user_posts
 
 tests = Blueprint('tests', __name__)
 
+@tests.route('/', methods=['GET'])
+def index():
+    return make_response({'msg': 'Hello World!', 'success': True}), 200
+
 
 @tests.route('/posts/<int:user_id>', methods=['GET'])
 def posts(user_id: int):
