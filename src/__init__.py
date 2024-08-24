@@ -11,11 +11,12 @@ db = prepare_extensions(app)
 
 def create_app(db_uri=f"postgresql+psycopg2://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}"):
 
-    app.config['SECRET_KEY'] = os.getenv('APP_SECRET_KEY')    
-
+    app.config['SECRET_KEY'] = os.getenv('APP_SECRET_KEY')
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    
     prepare_directories(app)
     prepare_blueprints(app)
-    prepare_database(app, db_uri)
+    prepare_database(app)
     
     celery_app = prepare_celery(app)
     
@@ -25,8 +26,8 @@ def create_app(db_uri=f"postgresql+psycopg2://{os.getenv('DB_USER')}:{os.getenv(
 def prepare_celery(app):
     app.config.from_mapping(
         CELERY=dict(
-                broker_url="redis://localhost:6379",
-                result_backend="redis://localhost:6379",
+                broker_url=os.getenv('CELERY_BROKER'),
+                result_backend=os.getenv('CELERY_RESULT_BACKEND'),
                 task_ignore_result=False,
                 task_track_started=True,
                 task_serializer="json",
@@ -51,9 +52,7 @@ def prepare_blueprints(app):
     app.register_blueprint(tests, url_prefix='/tests/')
     
 
-def prepare_database(app, db_uri):
-    # initializing sqlalchemy and models
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+def prepare_database(app):
     db.init_app(app)
     # creates the models in the specified database
     with app.app_context():

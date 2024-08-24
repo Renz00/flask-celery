@@ -2,13 +2,13 @@ NOTE: CELERY ONLY WORKS IN LINUX ENVIRONMENTS!
 
 # Celery worker command #
 # for Linux
-celery -A main:celery_app worker --log-level=debug -P gevent
+celery -A runcelery worker --loglevel DEBUG -P gevent
 
 # for Windows WSL2
-celery -A main:celery_app worker --log-level=debug -P threads
+celery -A runcelery worker --loglevel DEBUG -P threads
 
 # Flower monitoring command
-celery -A main:celery_app flower --port=5555
+celery -A runcelery flower --port=5555
 
 # INSTALLING REDIS IN UBUNTU
 
