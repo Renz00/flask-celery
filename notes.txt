@@ -3,7 +3,7 @@ NOTE: CELERY ONLY WORKS IN LINUX ENVIRONMENTS!
 
 # Running celery
 # for Linux
-# using prefork worker (CPU bound) with 7 concurrency (7 CPU cores will be used)
+# using prefork worker (CPU bound) with 7 concurrency (7 CPU cores will be used by worker)
 celery -A runcelery worker --loglevel DEBUG --logfile=/home/renz-dev/logs/flask_webapp_celery.log -c 7
 
 # using gevent worker (IO bound)
