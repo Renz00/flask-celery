@@ -12,6 +12,9 @@ celery -A runcelery worker --loglevel DEBUG -P threads
 # Flower monitoring command
 celery -A runcelery flower --port=5555
 
+# Check why celery worker failed:
+tail -f /var/log/kern.log
+
 ### INSTALLING REDIS IN UBUNTU ###
 
 sudo apt update
