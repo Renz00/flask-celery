@@ -4,7 +4,8 @@ NOTE: CELERY ONLY WORKS IN LINUX ENVIRONMENTS!
 
 # Running celery
 # for Linux with log file
-celery -A runcelery worker --loglevel DEBUG --logfile=/home/renz/logs/celery.log -P gevent
+celery -A runcelery worker --loglevel DEBUG --logfile=/home/renz/logs/celery.log # using prefork worker (CPU bound)
+celery -A runcelery worker --loglevel DEBUG --logfile=/home/renz/logs/celery.log -P gevent # using gevent worker (IO bound)
 
 # for Windows WSL2 with log file
 celery -A runcelery worker --loglevel DEBUG --logfile=/home/renz/logs/celery.log -P threads
