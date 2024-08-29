@@ -3,11 +3,11 @@ NOTE: CELERY ONLY WORKS IN LINUX ENVIRONMENTS!
 ### CELERY COMMANDS ###
 
 # Running celery
-# for Linux
-celery -A runcelery worker --loglevel DEBUG -P gevent
+# for Linux with log file
+celery -A runcelery worker --loglevel DEBUG --logfile=/home/renz/logs/celery.log -P gevent
 
-# for Windows WSL2
-celery -A runcelery worker --loglevel DEBUG -P threads
+# for Windows WSL2 with log file
+celery -A runcelery worker --loglevel DEBUG --logfile=/home/renz/logs/celery.log -P threads
 
 # Flower monitoring command
 celery -A runcelery flower --port=5555
