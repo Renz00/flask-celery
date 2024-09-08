@@ -1,11 +1,6 @@
-import json
-from datetime import datetime, timezone, timedelta
-from flask import Blueprint, request, make_response
+from flask import Blueprint, make_response
 from celery.result import AsyncResult
-from typing import Dict, List
 
-from .. import db, app
-from ..models import User, Post
 from ..celery.tasks import get_user_posts
 
 tests = Blueprint('tests', __name__)

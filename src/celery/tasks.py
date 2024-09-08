@@ -1,6 +1,6 @@
 import time, random
 from celery import shared_task
-from .. import db
+# from .. import db
 from ..models import User, Post
 
 # bind is used to provide access to the task instance, useful to retries or aborting tasks
