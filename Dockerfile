@@ -20,6 +20,3 @@ COPY . .
 
 # Expose the port your application will run on
 EXPOSE 5000
-
-# Specify the command to run on container start
-CMD ["python", "main.py"]

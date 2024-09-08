@@ -5,21 +5,57 @@ services:
   flask-app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./Dockerfile
     container_name: flask-app
     ports:
       - 5000:5000
-    environment:
-      - DEBUG=${DEBUG}
-      - APP_SECRET_KEY=${APP_SECRET_KEY}
-      - APP_HOST=${APP_HOST}
-      - APP_PORT=${APP_PORT}
+    command: python main.py
+    env_file:
+      - .env
     volumes:
-      - ./app/:/usr/app/
+      - .:/app
     depends_on:
       postgres:
         # waiting for the database to be ready
         condition: service_healthy
+      redis:
+        condition: service_started
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: celery-worker
+    command: celery -A main:celery_app worker --loglevel DEBUG -c ${CELERY_MAX_WORKERS}
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        # waiting for the database to be ready
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  flower:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: flower
+    command: celery -A main:celery_app flower --port=5555
+    ports:
+      - 5555:5555
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        # waiting for the database to be ready
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   postgres:
     image: "postgres" # use latest official postgres version
@@ -27,18 +63,20 @@ services:
     restart: always
     ports:
       - 5432:5432
-    environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
+    env_file:
+      - .env
     volumes:
       - database-data:/var/lib/postgresql/data/
     healthcheck:
       # used in flask container depends_on condition to wait for the DB to be ready
-      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
-      interval: 5s
-      timeout: 20s
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
       retries: 5
+      start_period: 30s
+      timeout: 10s
+    
+  redis:
+    image: "redis:alpine"
 
 volumes:
   database-data:
