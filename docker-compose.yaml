@@ -72,11 +72,19 @@ services:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 10s
       retries: 5
-      start_period: 30s
       timeout: 10s
     
   redis:
     image: "redis:alpine"
+    restart: always
+    ports:
+      - 6379:6379
+  healthcheck:
+      # used in flask container depends_on condition to wait for the DB to be ready
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      retries: 5
+      timeout: 10s
 
 volumes:
   database-data:
